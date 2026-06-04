@@ -12,12 +12,12 @@ All applications use the raw Win32 API (GDI drawing, dialog boxes, message loops
 
 | Lab | Project | Focus |
 | --- | --- | --- |
-| `1-lab` | `Lab1` | Win32 application skeleton split into modules; dialog box with a scrollbar control. |
-| `2-lab` | `Lab2` | Abstract `Shape` base class with a pure virtual `Show`; `Point`/`Line`/`Rect`/`Ellipse` subclasses; a `ShapeEditor` that manages drawing. Includes XML schema files. |
-| `3-lab` | `Lab3` | Shape hierarchy plus a parallel `Editor` class hierarchy; toolbar and dynamic shape list. |
-| `4-lab` | `Lab4` | Virtual inheritance and multiple inheritance (`LineOOShape : public EllipseShape, public LineShape`); composite shapes (`CubeShape`); menu checkmark state. |
-| `5-lab` | `Lab5` | Singleton editor (`MyEditor::GetInstance`), unified `Editor` hierarchy, shape picking/deletion, file save/load of shapes, and a separate table window (`MyTable`). |
-| `6-lab` | `lab6`, `Object2`, `Object3` | Inter-process communication between three cooperating applications using `WM_COPYDATA` and the Windows clipboard to generate a matrix and compute its determinant. |
+| [`1-lab`](1-lab) | `Lab1` | Win32 application skeleton split into modules; dialog box with a scrollbar control. |
+| [`2-lab`](2-lab) | `Lab2` | Abstract [`Shape`](2-lab/shape.h) base class with a pure virtual `Show`; [`Point`](2-lab/shape.h)/[`Line`](2-lab/shape.h)/[`Rect`](2-lab/shape.h)/[`Ellipse`](2-lab/shape.h) subclasses; a [`ShapeEditor`](2-lab/shape_editor.h) that manages drawing. Includes XML schema files. |
+| [`3-lab`](3-lab) | `Lab3` | Shape hierarchy plus a parallel [`Editor`](3-lab/editor.h) class hierarchy; toolbar and dynamic shape list. |
+| [`4-lab`](4-lab) | `Lab4` | Virtual inheritance and multiple inheritance ([`LineOOShape : public EllipseShape, public LineShape`](4-lab/shape.h)); composite shapes ([`CubeShape`](4-lab/shape.h)); menu checkmark state. |
+| [`5-lab`](5-lab) | `Lab5` | Singleton editor ([`MyEditor::GetInstance`](5-lab/my_editor.h)), unified [`Editor`](5-lab/editor.h) hierarchy, shape picking/deletion, file save/load of shapes, and a separate table window ([`MyTable`](5-lab/my_table.h)). |
+| [`6-lab`](6-lab) | [`lab6`](6-lab/lab6), [`Object2`](6-lab/Object2), [`Object3`](6-lab/Object3) | Inter-process communication between three cooperating applications using `WM_COPYDATA` and the Windows clipboard to generate a matrix and compute its determinant. |
 
 ## Tech stack
 
@@ -33,11 +33,11 @@ No explicit C++ language-standard setting is configured in the project files, so
 
 Each lab ships its own Visual Studio solution. To build a lab:
 
-1. Open the solution for the lab in Visual Studio (2019 or newer), for example `1-lab/Lab1.sln` or `5-lab/Lab5.sln`.
+1. Open the solution for the lab in Visual Studio (2019 or newer), for example [`1-lab/Lab1.sln`](1-lab/Lab1.sln) or [`5-lab/Lab5.sln`](5-lab/Lab5.sln).
 2. Select a configuration (Debug/Release) and platform.
 3. Build and run from the IDE.
 
-Lab 6 contains three separate projects (`lab6`, `Object2`, `Object3`). Build each one, then run them together so they can exchange data via `WM_COPYDATA` and the clipboard.
+Lab 6 contains three separate projects ([`lab6`](6-lab/lab6), [`Object2`](6-lab/Object2), [`Object3`](6-lab/Object3)). Build each one, then run them together so they can exchange data via `WM_COPYDATA` and the clipboard.
 
 ## Project structure
 
@@ -54,4 +54,4 @@ Lab 6 contains three separate projects (`lab6`, `Object2`, `Object3`). Build eac
     └── Object3/  Determinant calculator
 ```
 
-Each project directory follows the standard Visual Studio Win32 layout: `framework.h`, `targetver.h`, a `*.rc` resource script, icons, and the `.sln`/`.vcxproj` files.
+Each project directory follows the standard Visual Studio Win32 layout: [`framework.h`](1-lab/framework.h), [`targetver.h`](1-lab/targetver.h), a `*.rc` resource script, icons, and the `.sln`/`.vcxproj` files.
