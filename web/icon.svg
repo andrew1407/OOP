@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 66 66">
+  <!-- A class diagram: a base Shape box with a circle, a square and a line inheriting from it -->
+  <g fill="none" stroke="#3557d6" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M32 25.5v5M11 30.5h42M11 30.5v6M32 30.5v6M53 30.5v6"/>
+  </g>
+  <rect x="17" y="2.5" width="30" height="14" rx="3.5" fill="#d8ecfb" stroke="#4a90c8" stroke-width="2.6"/>
+  <path d="M24 9.5h16" stroke="#1f4f80" stroke-width="2.8" stroke-linecap="round"/>
+  <path d="M32 18l4.2 7h-8.4z" fill="#fbf1cc" stroke="#3557d6" stroke-width="2.4" stroke-linejoin="round"/>
+  <circle cx="11" cy="48.5" r="9" fill="#fbf1cc" stroke="#b8971b" stroke-width="2.6"/>
+  <rect x="23.5" y="39.5" width="17" height="17" rx="2.5" fill="#d8ecfb" stroke="#4a90c8" stroke-width="2.6"/>
+  <path d="M46.5 57l13-17" stroke="#8a6d0b" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="46.5" cy="57" r="2.2" fill="#8a6d0b"/>
+  <circle cx="59.5" cy="40" r="2.2" fill="#8a6d0b"/>
+</svg>

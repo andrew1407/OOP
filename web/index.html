@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OOP Labs</title>
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <script src="theme.js"></script>
+  <meta name="description" content="Run the OOP labs in your browser: Win32 shape editors, dialogs and a three-process matrix tool, compiled from their C++ sources to WebAssembly.">
+  <style>
+    :root {
+      --bg: #f6f7f9; --panel: #ffffff; --ink: #1b1f24; --muted: #5d6673; --line: #dfe3e8; --grid: #eceff3;
+      --accent: #3557d6; --accent-ink: #ffffff; --soft: #eef1fb; --err: #c0362c; --err-soft: #fdecea; --ok: #1f8a4c; --ok-soft: #e3f4ea;
+      --c2: #d4731f; --cpp: #1d7f93; --cpp-soft: #dcf1f5;
+      --face: #f3f4f6; --face-line: #c9ced6; --tip-bg: #ffffe1; --tip-ink: #1b1f24; --tip-line: #8a8f99; --pressed: #dbe3fb;
+      --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+      color-scheme: light;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #111418; --panel: #191d23; --ink: #e6e9ee; --muted: #9aa4b2; --line: #2b313a; --grid: #222830;
+        --accent: #7c97ff; --accent-ink: #0d1117; --soft: #1f2636; --err: #ff7b72; --err-soft: #3a1d1c; --ok: #4fd18b; --ok-soft: #16301f;
+        --c2: #f0a050; --cpp: #4cc4d8; --cpp-soft: #143239;
+        --face: #d9dde3; --face-line: #8c939e; --tip-bg: #2a2f37; --tip-ink: #e6e9ee; --tip-line: #4a525e; --pressed: #b9c6ee;
+        color-scheme: dark;
+      }
+    }
+    :root[data-theme="dark"] {
+      --bg: #111418; --panel: #191d23; --ink: #e6e9ee; --muted: #9aa4b2; --line: #2b313a; --grid: #222830;
+      --accent: #7c97ff; --accent-ink: #0d1117; --soft: #1f2636; --err: #ff7b72; --err-soft: #3a1d1c; --ok: #4fd18b; --ok-soft: #16301f;
+      --c2: #f0a050; --cpp: #4cc4d8; --cpp-soft: #143239;
+      --face: #d9dde3; --face-line: #8c939e; --tip-bg: #2a2f37; --tip-ink: #e6e9ee; --tip-line: #4a525e; --pressed: #b9c6ee;
+      color-scheme: dark;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+    .wrap { max-width: 1240px; margin: 0 auto; padding: 28px 16px 64px; }
+    header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 18px; }
+    header img { flex: none; width: 52px; height: 52px; }
+    h1 { font-size: 24px; margin: 0; letter-spacing: -.01em; }
+    header p { margin: 2px 0 0; color: var(--muted); }
+    a { color: var(--accent); }
+    code { font-family: var(--mono); font-size: .92em; }
+    button { font: inherit; cursor: pointer; }
+    [hidden] { display: none !important; }
+
+    nav.labs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+    nav.labs button { display: flex; align-items: center; gap: 7px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 10px; padding: 6px 12px; font-size: 14px; }
+    nav.labs button:hover { border-color: var(--accent); }
+    nav.labs button[aria-selected="true"] { background: var(--soft); border-color: var(--accent); font-weight: 600; }
+    .lang { font: 600 10px/1 system-ui, sans-serif; letter-spacing: .04em; padding: 3px 5px; border-radius: 5px; border: 1px solid; text-transform: uppercase; }
+    .lang.cpp { color: var(--cpp); background: var(--cpp-soft); border-color: var(--cpp); }
+
+    .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px; margin-bottom: 16px; min-width: 0; }
+    .panel.inner { background: var(--bg); padding: 14px; margin: 0; }
+    h2 { font-size: 14px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 12px; font-weight: 600; }
+    h2 small { text-transform: none; letter-spacing: 0; font-weight: 400; }
+    .lab-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+    .lab-head h3 { margin: 0; font-size: 19px; }
+    .lab-head a { font-size: 13px; margin-left: auto; }
+    .intro { margin: 0 0 14px; color: var(--muted); max-width: 900px; }
+    .note { border-left: 3px solid var(--c2); background: color-mix(in srgb, var(--c2) 9%, transparent); padding: 8px 12px; border-radius: 0 8px 8px 0; font-size: 14px; margin: 0 0 14px; }
+    .note.native { border-color: var(--cpp); background: color-mix(in srgb, var(--cpp) 8%, transparent); }
+    .note ul { margin: 4px 0 0; padding-left: 20px; }
+    .note li + li { margin-top: 3px; }
+    .hint { color: var(--muted); font-size: 13px; margin: 10px 0 0; }
+    .muted { color: var(--muted); font-weight: 400; }
+    .bad { color: var(--err); }
+
+    .controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+    .controls .hint { margin: 0; }
+    .run { padding: 8px 20px; border: 0; border-radius: 10px; background: var(--accent); color: var(--accent-ink); font-weight: 600; }
+    .run:disabled { opacity: .5; cursor: wait; }
+    .ghost { padding: 7px 16px; border: 1px solid var(--line); border-radius: 10px; background: transparent; color: var(--ink); }
+    .ghost:hover { border-color: var(--accent); }
+    .pill { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 99px; border: 1px solid var(--line); margin: 2px 2px 2px 0; }
+    .pill.running { color: var(--ok); border-color: var(--ok); background: var(--ok-soft); }
+    .pill.crashed { color: var(--err); border-color: var(--err); background: var(--err-soft); }
+
+    .stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-bottom: 16px; }
+    .stat { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; min-width: 0; }
+    .stat b { display: block; font-size: 20px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; font-family: var(--mono); }
+    .stat span { font-size: 12px; color: var(--muted); }
+    .two-col { display: grid; gap: 16px; grid-template-columns: 1fr; margin-bottom: 16px; }
+    @media (min-width: 900px) { .two-col { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+    .table-wrap { overflow: auto; max-height: 320px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
+    table { border-collapse: collapse; width: 100%; font-size: 13px; }
+    th, td { text-align: left; padding: 5px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+    th { color: var(--muted); font-weight: 600; position: sticky; top: 0; background: var(--panel); }
+    td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); }
+    table.mtx { width: auto; }
+    pre.text { margin: 0; font: 13px/1.45 var(--mono); background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; overflow: auto; max-height: 320px; white-space: pre; }
+    .copy-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+    .copy-head h2 { margin: 0; }
+    .copy-actions { display: inline-flex; gap: 4px; margin-left: auto; flex-wrap: wrap; }
+    .mini { border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 6px; font-size: 12px; padding: 2px 8px; white-space: nowrap; cursor: pointer; }
+    .mini:hover { border-color: var(--accent); color: var(--accent); }
+    ol.log { margin: 0; padding: 8px 12px 8px 40px; font: 12px/1.55 var(--mono); max-height: 240px; overflow: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+    ol.log:empty::before { content: 'Nothing yet.'; color: var(--muted); margin-left: -28px; }
+    ol.log li { overflow-wrap: anywhere; }
+    footer { color: var(--muted); font-size: 13px; margin-top: 24px; }
+
+    /* ---- the emulated Win32 desktop */
+    .desktop { display: grid; gap: 16px; margin-bottom: 16px; }
+    .desktop.multi { grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); align-items: start; }
+    figure.w32-slot { margin: 0; min-width: 0; }
+    figure.w32-slot figcaption { display: flex; align-items: baseline; gap: 8px; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+    .slot { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+    .w32-idle { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; width: 100%; border: 1px dashed var(--line); border-radius: 10px; padding: 14px; font-size: 14px; color: var(--muted); }
+    .w32-idle b { color: var(--ink); }
+    .w32-win { position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: 9px; overflow: visible; box-shadow: 0 2px 10px rgb(0 0 0 / .06); max-width: 100%; }
+    .w32-title { display: flex; align-items: center; gap: 7px; padding: 4px 4px 4px 10px; background: var(--soft); border-radius: 8px 8px 0 0; font-size: 13px; font-weight: 600; min-height: 30px; }
+    .w32-title .t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .w32-title img { image-rendering: pixelated; flex: none; }
+    .w32-x { margin-left: auto; flex: none; border: 0; background: transparent; color: var(--muted); width: 30px; height: 24px; border-radius: 6px; font-size: 12px; }
+    .w32-x:hover { background: var(--err); color: #fff; }
+    .w32-menubar { position: relative; display: flex; flex-wrap: wrap; gap: 2px; padding: 2px 4px; border-bottom: 1px solid var(--line); font-size: 13px; }
+    .w32-menubar:empty { display: none; }
+    .w32-mi { border: 0; background: transparent; color: var(--ink); padding: 3px 9px; border-radius: 5px; text-align: left; }
+    .w32-mi:hover, .w32-mi[aria-expanded="true"] { background: var(--soft); }
+    .w32-drop { position: absolute; top: 100%; z-index: 40; display: flex; flex-direction: column; min-width: 200px; padding: 4px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 8px 24px rgb(0 0 0 / .18); }
+    .w32-drop .w32-mi { display: flex; padding: 5px 10px 5px 4px; }
+    .w32-drop hr { border: 0; border-top: 1px solid var(--line); margin: 4px 0; width: 100%; }
+    .w32-drop .ck { display: inline-block; width: 20px; text-align: center; color: var(--accent); font-weight: 700; }
+    .w32-toolbar { position: relative; display: flex; flex-wrap: wrap; gap: 3px; padding: 4px; border-bottom: 1px solid var(--line); }
+    .w32-tb { display: grid; place-items: center; width: calc(var(--w) + 12px); height: calc(var(--h) + 10px); padding: 0; background: var(--face); border: 1px solid var(--face-line); border-radius: 5px; }
+    .w32-tb:hover { border-color: var(--accent); }
+    .w32-tb.pressed { background: var(--pressed); border-color: var(--accent); box-shadow: inset 0 1px 3px rgb(0 0 0 / .25); }
+    .w32-tb i { display: block; width: var(--w); height: var(--h); background-repeat: no-repeat; image-rendering: pixelated; }
+    .w32-tip { position: absolute; top: calc(100% - 2px); z-index: 40; display: flex; flex-direction: column; padding: 3px 8px; background: var(--tip-bg); color: var(--tip-ink); border: 1px solid var(--tip-line); border-radius: 3px; font-size: 12px; white-space: nowrap; pointer-events: none; box-shadow: 0 3px 8px rgb(0 0 0 / .15); }
+    .w32-tip b { font-weight: 400; }
+    .w32-tip small { color: var(--muted); }
+    .w32-client { background: #fff; line-height: 0; border-radius: 0 0 8px 8px; overflow: hidden; }
+    .w32-client canvas { display: block; width: 100%; height: auto; touch-action: none; cursor: crosshair; }
+    .w32-has-modal > .w32-client, .w32-has-modal > .w32-menubar, .w32-has-modal > .w32-toolbar { pointer-events: none; opacity: .55; }
+    .w32-dialog.modal { position: absolute; top: 40px; left: 50%; translate: -50% 0; z-index: 30; box-shadow: 0 12px 34px rgb(0 0 0 / .28); }
+    .w32-dialog.modal { max-width: none; }
+    .w32-dialog.modal.overhang { left: 0; translate: none; }
+    .w32-dialog .w32-title { border-radius: 8px 8px 0 0; }
+    .w32-body { position: relative; font: 12px/1.2 "Segoe UI", Tahoma, system-ui, sans-serif; border-radius: 0 0 8px 8px; }
+    .w32-ctl { position: absolute; margin: 0; }
+    .w32-btn { font-size: 12px; padding: 0 2px; line-height: 1; color: var(--ink); background: var(--bg); border: 1px solid var(--face-line); border-radius: 4px; }
+    .w32-btn.def { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+    .w32-btn:hover { background: var(--soft); }
+    .w32-edit { font: 12px var(--mono); padding: 0 4px; color: var(--ink); background: var(--bg); border: 1px solid var(--face-line); border-radius: 3px; }
+    .w32-edit:focus, .w32-list:focus, .w32-scroll:focus { outline: 2px solid var(--accent); outline-offset: 0; }
+    .w32-label { font-size: 12px; padding-top: 1px; white-space: nowrap; }
+    .w32-icon { width: 32px !important; height: 32px !important; image-rendering: pixelated; }
+    .w32-list { overflow-y: auto; background: var(--bg); border: 1px solid var(--face-line); font: 12px/1.45 "Segoe UI", Tahoma, system-ui, sans-serif; }
+    .w32-list [role="option"] { padding: 0 5px; cursor: pointer; white-space: nowrap; }
+    .w32-list [aria-selected="true"] { background: var(--accent); color: var(--accent-ink); }
+    .w32-scroll { display: flex; background: var(--bg); border: 1px solid var(--face-line); border-radius: 3px; }
+    .w32-scroll .arr { flex: none; width: 18px; padding: 0; border: 0; background: var(--soft); color: var(--ink); font-size: 8px; }
+    .w32-scroll .track { position: relative; flex: 1; touch-action: none; cursor: pointer; }
+    .w32-scroll .thumb { position: absolute; top: 1px; bottom: 1px; width: 18px; border-radius: 3px; background: var(--muted); opacity: .6; cursor: grab; touch-action: none; }
+
+    @media (max-width: 720px) {
+      .wrap { padding-top: 18px; }
+      header img { width: 42px; height: 42px; }
+      h1 { font-size: 21px; }
+      .panel { padding: 14px; border-radius: 10px; }
+      .panel.inner { padding: 12px; }
+      nav.labs button { padding: 7px 10px; font-size: 13px; }
+      .mini { padding: 5px 10px; }
+      .lab-head a { margin-left: 0; flex-basis: 100%; }
+      .long { display: none; }
+      .w32-dialog.modal { top: 34px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img src="icon.svg" alt="" width="52" height="52">
+    <div>
+      <h1>OOP Labs</h1>
+      <p>The <a href="https://github.com/Andrew1407/OOP">OOP</a> labs, running in your browser. Each Win32 program is compiled from its own C++ sources to WebAssembly and drawn here: shape editors, dialogs, and three processes that pass a matrix around. Hover a menu item or button to see its original Ukrainian or Russian text.</p>
+    </div>
+    <button class="theme-toggle" data-theme-toggle></button>
+  </header>
+
+  <nav class="labs" id="nav" role="tablist" aria-label="Labs"></nav>
+  <main id="labs"></main>
+
+  <footer>The client areas are white, as in the Windows originals. Drawing works with a mouse, a pen or a finger.</footer>
+</div>
+<script type="module" src="./app.js"></script>
+</body>
+</html>
