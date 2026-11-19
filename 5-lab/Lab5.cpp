@@ -344,6 +344,6 @@ void fn_show(HDC hdc, const std::string type, const int* coords)
 	{
 		pe->SetCoords(coords);
 		pe->Show(hdc);
-		delete pe;
+		Figure.AddShape(pe);
 	}
 }

@@ -35,3 +35,4 @@
 web/wasm/
 web/.build/
 _site/
+__pycache__/

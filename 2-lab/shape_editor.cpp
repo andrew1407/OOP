@@ -84,6 +84,11 @@ void ShapeEditor::OnLBup(HWND hWnd)
 	if (pe)
 	{
 		pe->OnLBup(hWnd);
+		if (index >= 105)
+		{
+			flagPaint = false;
+			return;
+		}
 		ps->Set(pe->x1, pe->y1, pe->x2, pe->y2);
 		shapeList[index++] = ps;
 		switch (shape)

@@ -97,8 +97,8 @@ HDC newDc(int hwnd, bool clipAll) { int id = nextDc++; DC d; d.hwnd = hwnd; d.cl
 const Obj& pen(const DC* d) { auto it = objs.find(d->pen); return it == objs.end() ? objs[1] : it->second; }
 const Obj& brush(const DC* d) { auto it = objs.find(d->brush); return it == objs.end() ? objs[2] : it->second; }
 
-// Windows-1251 to UTF-16, upper half (the labs' ANSI code page)
-const unsigned short CP1251[128] = {
+// Windows-1251 to UTF-16, 0x80-0xBF (the labs' ANSI code page); 0xC0-0xFF are U+0410-U+044F
+const unsigned short CP1251[64] = {
   0x0402,0x0403,0x201A,0x0453,0x201E,0x2026,0x2020,0x2021,0x20AC,0x2030,0x0409,0x2039,0x040A,0x040C,0x040B,0x040F,
   0x0452,0x2018,0x2019,0x201C,0x201D,0x2022,0x2013,0x2014,0xFFFD,0x2122,0x0459,0x203A,0x045A,0x045C,0x045B,0x045F,
   0x00A0,0x040E,0x045E,0x0408,0x00A4,0x0490,0x00A6,0x00A7,0x0401,0x00A9,0x0404,0x00AB,0x00AC,0x00AD,0x00AE,0x0407,
@@ -397,7 +397,7 @@ int MultiByteToWideChar(UINT, DWORD, LPCSTR src, int cb, LPWSTR dst, int cch) {
   if (cch == 0) return n;
   for (int i = 0; i < n && i < cch; i++) {
     unsigned char c = (unsigned char)src[i];
-    dst[i] = (WCHAR)(c < 128 ? c : CP1251[c - 128]);
+    dst[i] = (WCHAR)(c < 0x80 ? c : c < 0xC0 ? CP1251[c - 0x80] : 0x0410 + (c - 0xC0));
   }
   return n < cch ? n : cch;
 }
@@ -477,12 +477,8 @@ EMSCRIPTEN_KEEPALIVE int w32_send(int h, int m, int wp, int lp) {
 
 // The toolbar asks its parent for tooltip text with WM_NOTIFY / TTN_NEEDTEXT.
 EMSCRIPTEN_KEEPALIVE const void* w32_tooltip(int parent, int tb, int id, int wide) {
-  // Labs 3 and 4 lstrcpy narrow strings into szText as UTF-16, which runs past its 80 units
-  // until it meets a 16-bit zero. The padding keeps that overrun away from the shim's state.
-  static struct { TOOLTIPTEXTA t; char pad[16384]; } as;
-  static struct { TOOLTIPTEXTW t; WCHAR pad[16384]; } us;
-  TOOLTIPTEXTA& a = as.t;
-  TOOLTIPTEXTW& u = us.t;
+  static TOOLTIPTEXTA a;
+  static TOOLTIPTEXTW u;
   Win* w = find(W(parent));
   if (!w) return nullptr;
   if (wide) {

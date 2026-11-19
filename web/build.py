@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compile the OOP labs' C++ to WebAssembly with emscripten (em++ must be on PATH).
+"""Compile the shape editor labs' (2-5) C++ to WebAssembly with emscripten (em++ must be on PATH).
 
 Each lab's sources are the <ClCompile> files of its own .vcxproj, built against the Win32
 shim in web/win32 instead of the Windows SDK. The labs are copied to web/.build first so that
@@ -8,7 +8,7 @@ MSVC's handling of the source text can be reproduced without touching the lab di
     ANSI code page, so at run time every char string the labs use is cp1251 (as in
     5-lab/shapes.txt); the files that are already cp1251 are copied as they are.
   - Windows file names are case-insensitive, so "Resource.h" also finds "resource.h".
-Output: web/wasm/<name>.mjs + .wasm, one module per Win32 process.
+Output: web/wasm/<name>.mjs + .wasm, one module per lab.
 """
 import re
 import shutil
@@ -21,16 +21,12 @@ WEB = ROOT / 'web'
 TMP = WEB / '.build'
 OUT = WEB / 'wasm'
 
-# name, project file, character set (labs 1-4 were built as Unicode, 5-6 as multi-byte)
+# name, project file, character set (labs 2-4 were built as Unicode, lab 5 as multi-byte)
 PROJECTS = [
-    ('lab1', '1-lab/Lab1.vcxproj', 'unicode'),
     ('lab2', '2-lab/Lab2.vcxproj', 'unicode'),
     ('lab3', '3-lab/Lab3.vcxproj', 'unicode'),
     ('lab4', '4-lab/Lab4.vcxproj', 'unicode'),
     ('lab5', '5-lab/Lab5.vcxproj', 'mbcs'),
-    ('lab6', '6-lab/lab6/lab6.vcxproj', 'mbcs'),
-    ('object2', '6-lab/Object2/Object2.vcxproj', 'mbcs'),
-    ('object3', '6-lab/Object3/Object3.vcxproj', 'mbcs'),
 ]
 
 COMPILE = ['-O2', '-std=c++17', '-fshort-wchar', '-fno-strict-return', '-w', f'-I{WEB / "win32"}']

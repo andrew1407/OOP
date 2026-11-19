@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>OOP Labs</title>
+  <title>Shape Editor · OOP Labs</title>
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <script src="theme.js"></script>
-  <meta name="description" content="Run the OOP labs in your browser: Win32 shape editors, dialogs and a three-process matrix tool, compiled from their C++ sources to WebAssembly.">
+  <meta name="description" content="The shape-painting app from the OOP labs, running in your browser: a Win32 editor with a toolbar, a shape list and save/load, compiled from its C++ sources to WebAssembly.">
   <style>
     :root {
       --bg: #f6f7f9; --panel: #ffffff; --ink: #1b1f24; --muted: #5d6673; --line: #dfe3e8; --grid: #eceff3;
@@ -48,6 +48,8 @@
     nav.labs button { display: flex; align-items: center; gap: 7px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 10px; padding: 6px 12px; font-size: 14px; }
     nav.labs button:hover { border-color: var(--accent); }
     nav.labs button[aria-selected="true"] { background: var(--soft); border-color: var(--accent); font-weight: 600; }
+    nav.labs button.main { padding: 7px 14px; font-weight: 600; }
+    nav.labs .nav-sep { align-self: center; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; margin: 0 2px 0 10px; }
     .lang { font: 600 10px/1 system-ui, sans-serif; letter-spacing: .04em; padding: 3px 5px; border-radius: 5px; border: 1px solid; text-transform: uppercase; }
     .lang.cpp { color: var(--cpp); background: var(--cpp-soft); border-color: var(--cpp); }
 
@@ -173,8 +175,8 @@
   <header>
     <img src="icon.svg" alt="" width="52" height="52">
     <div>
-      <h1>OOP Labs</h1>
-      <p>The <a href="https://github.com/Andrew1407/OOP">OOP</a> labs, running in your browser. Each Win32 program is compiled from its own C++ sources to WebAssembly and drawn here: shape editors, dialogs, and three processes that pass a matrix around. Hover a menu item or button to see its original Ukrainian or Russian text.</p>
+      <h1>Shape Editor</h1>
+      <p>The shape-painting app from the <a href="https://github.com/Andrew1407/OOP">OOP</a> labs, running in your browser. It is a Win32 program compiled from its own C++ sources to WebAssembly: draw shapes with the toolbar and menus, keep them in the shape list, and save and load them. Labs 2–4 are its earlier versions. Hover a menu item or button to see its original Ukrainian or Russian text.</p>
     </div>
     <button class="theme-toggle" data-theme-toggle></button>
   </header>

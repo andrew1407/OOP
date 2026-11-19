@@ -33,7 +33,7 @@ void TBButtonPressed(HWND hwndToolBar, int id)
 void TBIconsNotify(LPARAM lParam)
 {
 	LPNMHDR pnmh = (LPNMHDR)lParam;
-	LPWSTR pText;
+	LPCSTR pText;
 
 	if (pnmh->code == TTN_NEEDTEXT)
 	{
@@ -41,20 +41,20 @@ void TBIconsNotify(LPARAM lParam)
 		switch (lpttt->hdr.idFrom)
 		{
 		case IDM_POINT:
-			pText = (LPWSTR)"Точка";
+			pText = "Точка";
 			break;
 		case IDM_LINE:
-			pText = (LPWSTR)"Лінія";
+			pText = "Лінія";
 			break;
 		case IDM_RECT:
-			pText = (LPWSTR)"Прямокутник";
+			pText = "Прямокутник";
 			break;
 		case IDM_ELLIPSE:
-			pText = (LPWSTR)"Еліпс";
+			pText = "Еліпс";
 			break;
-		default: pText = (LPWSTR)"Щось невідоме";
+		default: pText = "Щось невідоме";
 		}
-		lstrcpy(lpttt->szText, pText);
+		MultiByteToWideChar(CP_ACP, 0, pText, -1, lpttt->szText, 80);
 	}
 }
 

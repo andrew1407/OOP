@@ -44,6 +44,7 @@ static INT_PTR CALLBACK DlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPara
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
+		case IDCANCEL:
 		case IDC_CLOSE:
 		{
 			DestroyWindow(hWnd);
@@ -131,15 +132,15 @@ void MyTable::AddShape(const char* str, const int* coords)
 void MyTable::CleanTable()
 {
 	
-	if (!SendDlgItemMessage(hWnd_nomodal, IDC_LIST1, LB_GETCOUNT, 0, 0)) return;	//if list is empty
+	if (!SendDlgItemMessage(hWnd_nomodal, IDC_LIST1, LB_GETCOUNT, 0, 0) && !Index) return;	//if list is empty
 
 	while(SendDlgItemMessage(hWnd_nomodal, IDC_LIST1, LB_GETCOUNT, 0, 0))
 		SendMessage(GetDlgItem(hWnd_nomodal, IDC_LIST1), LB_DELETESTRING, --Index, 0);
-
+	Index = 0;
  
 	prevEl = -1;
 	isPicked = false;
-	PickShape(hMain, -1, isPicked);
+	if (hMain) PickShape(hMain, -1, isPicked);
 
 	//CLEAN FILE
 	std::ofstream out;
@@ -153,6 +154,7 @@ void MyTable::ReadFile(HWND hWnd, void fn_show(HDC, const std::string, const int
 {
 	while (SendDlgItemMessage(hWnd_nomodal, IDC_LIST1, LB_GETCOUNT, 0, 0))
 		SendMessage(GetDlgItem(hWnd_nomodal, IDC_LIST1), LB_DELETESTRING, --Index, 0);
+	Index = 0;
 
 	if (hMain)
 	{

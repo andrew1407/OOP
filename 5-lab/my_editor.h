@@ -28,4 +28,5 @@ public:
 	const int* GetCoords();
 	void DeleteShape(HWND, const int);
 	void pickShape(HDC, const int);
+	void AddShape(Editor*);
 };

@@ -13,8 +13,8 @@ int Work1Func(HINSTANCE hInst, HWND hWnd, char* strText)
 		InvalidateRect(hWnd, NULL, TRUE);
 	}
 	int strText_length =
-		(SB_POS < 10) ? 2 :
-		(SB_POS < 100) ? 3 : 4;
+		(SB_POS < 10) ? 1 :
+		(SB_POS < 100) ? 2 : 3;
 	return strText_length;
 }
 

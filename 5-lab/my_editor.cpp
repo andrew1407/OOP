@@ -148,6 +148,11 @@ void MyEditor::DeleteShape(HWND hWnd, const int pos)
 	InvalidateRect(hWnd, 0, 1);
 }
 
+void MyEditor::AddShape(Editor* pe)
+{
+	shapeList[index++] = pe;
+}
+
 void MyEditor::pickShape(HDC hdc, const int idx) 
 { 
 	pick_index = idx;

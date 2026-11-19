@@ -37,6 +37,9 @@ INT_PTR CALLBACK Work2Cb(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 		case IDGOBACK:
 			EndDialog(hDlg, -1);
 			return -1;
+		case IDYES2:
+			EndDialog(hDlg, 0);
+			return 0;
 		}
 	}
 	return 0;

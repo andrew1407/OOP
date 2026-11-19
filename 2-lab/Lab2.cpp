@@ -160,12 +160,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		Figure.OnMouseMove(hWnd);
 		break;
     case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
-			//Figure.OnPaint(hWnd);
-            EndPaint(hWnd, &ps);
-        }
+		Figure.OnPaint(hWnd);
         break;
     case WM_DESTROY:
         PostQuitMessage(0);
