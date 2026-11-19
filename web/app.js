@@ -112,7 +112,7 @@ const canvasPng = (canvas) => new Promise((res, rej) => canvas.toBlob((b) => (b 
 
 async function copyAction(btn) {
   const kind = btn.dataset.act, box = btn.closest('[data-copyable]');
-  const done = (text) => { btn.textContent = text; setTimeout(() => (btn.textContent = ACTION_LABEL[kind]), 1400); };
+  const done = (text) => { btn.style.minWidth = btn.style.minWidth || btn.getBoundingClientRect().width + 'px'; btn.textContent = text; setTimeout(() => (btn.textContent = ACTION_LABEL[kind]), 1400); };
   const name = (box?.dataset.title || 'image').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   try {
     if (kind === 'png') {
