@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" data-badge="1">
   <!-- A class diagram: a base Shape box with a circle, a square and a line inheriting from it, on a round outlined badge -->
-  <circle cx="32" cy="32" r="30.5" fill="#ffffff" stroke="#3557d6" stroke-width="3"/>
-  <svg x="12.5" y="12.5" width="39" height="39" viewBox="-1 -1 66 66">
+  <circle cx="32" cy="32" r="30" fill="#ffffff" stroke="#3557d6" stroke-width="4"/>
+  <svg x="11.25" y="11.25" width="41.5" height="41.5" viewBox="0.2 -0.8 63.3 63.3">
     <g fill="none" stroke="#3557d6" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
     <path d="M32 25.5v5M11 30.5h42M11 30.5v6M32 30.5v6M53 30.5v6"/>
     </g>
