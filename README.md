@@ -29,11 +29,11 @@ All applications use the raw Win32 API (GDI drawing, dialog boxes, message loops
 
 ## Showcase
 
-**[Open the shape editor in the browser](https://andrew1407.github.io/OOP/)**. The page is the shape-painting app that labs 2–5 build step by step. It opens on the complete editor from lab 5: draw points, lines, rectangles, ellipses, lines with circles and cubes with the toolbar and menus, select or delete them in the shape list window, and save and load them through `shapes.txt` and `shapesRead.txt`. Labs 4, 3 and 2 are there as earlier versions of the same editor. Each canvas copies as a PNG image, and the message log and the `shapes.txt` table copy as text.
+**[Open the shape editor in the browser](https://andrew1407.github.io/OOP/)**. The page runs the finished shape-painting app from lab 5: draw points, lines, rectangles, ellipses, lines with circles and cubes with the toolbar and menus, select or delete them in the shape list window, and save and load them through `shapes.txt` and `shapesRead.txt`. The canvas copies as a PNG image, and the `shapes.txt` table and `shapesRead.txt` copy as text.
 
-- **Everything runs natively, nothing is ported.** [`web/build.py`](web/build.py) compiles the `<ClCompile>` sources of each lab's `.vcxproj` with emscripten, including `wWinMain` and its message loop. It builds labs 2–4 as Unicode and lab 5 as multi-byte, like the original projects, with narrow strings in Windows-1251.
-- **Win32 is emulated by a small shim** in [`web/win32`](web/win32) and [`web/host.js`](web/host.js). Windows, message queues and dialogs run in C++. `GetMessage` waits on the page through Asyncify. GDI drawing goes to a canvas with GDI's pens, brushes and `R2_NOTXORPEN` raster mode. Menus, toolbars, dialogs and string tables are read from the labs' own `.rc` files and bitmaps, and the UI labels are translated to English, with the originals in tooltips.
-- **Lab 5** keeps `shapes.txt` and `shapesRead.txt` in the module's file system. You can download what the lab wrote or upload a file for it to read.
+- **It runs natively, nothing is ported.** [`web/build.py`](web/build.py) compiles the `<ClCompile>` sources of [`5-lab/Lab5.vcxproj`](5-lab/Lab5.vcxproj) with emscripten, including `wWinMain` and its message loop, as a multi-byte build with narrow strings in Windows-1251, like the original project.
+- **Win32 is emulated by a small shim** in [`web/win32`](web/win32) and [`web/host.js`](web/host.js). Windows, message queues and dialogs run in C++. `GetMessage` waits on the page through Asyncify. GDI drawing goes to a canvas with GDI's pens, brushes and `R2_NOTXORPEN` raster mode. Menus, the toolbar, dialogs and string tables are read from the lab's own `.rc` files and bitmaps, and the UI labels are translated to English, with the originals in tooltips.
+- **Files**: `shapes.txt` and `shapesRead.txt` live in the module's file system. You can download what the editor wrote or upload a file for it to read.
 
 Build and run it locally (needs [emsdk](https://emscripten.org/docs/getting_started/downloads.html)):
 

@@ -44,12 +44,6 @@
     button { font: inherit; cursor: pointer; }
     [hidden] { display: none !important; }
 
-    nav.labs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
-    nav.labs button { display: flex; align-items: center; gap: 7px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 10px; padding: 6px 12px; font-size: 14px; }
-    nav.labs button:hover { border-color: var(--accent); }
-    nav.labs button[aria-selected="true"] { background: var(--soft); border-color: var(--accent); font-weight: 600; }
-    nav.labs button.main { padding: 7px 14px; font-weight: 600; }
-    nav.labs .nav-sep { align-self: center; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; margin: 0 2px 0 10px; }
     .lang { font: 600 10px/1 system-ui, sans-serif; letter-spacing: .04em; padding: 3px 5px; border-radius: 5px; border: 1px solid; text-transform: uppercase; }
     .lang.cpp { color: var(--cpp); background: var(--cpp-soft); border-color: var(--cpp); }
 
@@ -79,10 +73,6 @@
     .pill.running { color: var(--ok); border-color: var(--ok); background: var(--ok-soft); }
     .pill.crashed { color: var(--err); border-color: var(--err); background: var(--err-soft); }
 
-    .stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-bottom: 16px; }
-    .stat { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; min-width: 0; }
-    .stat b { display: block; font-size: 20px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; font-family: var(--mono); }
-    .stat span { font-size: 12px; color: var(--muted); }
     .two-col { display: grid; gap: 16px; grid-template-columns: 1fr; margin-bottom: 16px; }
     @media (min-width: 900px) { .two-col { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
     .table-wrap { overflow: auto; max-height: 320px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
@@ -90,21 +80,16 @@
     th, td { text-align: left; padding: 5px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
     th { color: var(--muted); font-weight: 600; position: sticky; top: 0; background: var(--panel); }
     td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); }
-    table.mtx { width: auto; }
     pre.text { margin: 0; font: 13px/1.45 var(--mono); background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; overflow: auto; max-height: 320px; white-space: pre; }
     .copy-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
     .copy-head h2 { margin: 0; }
     .copy-actions { display: inline-flex; gap: 4px; margin-left: auto; flex-wrap: wrap; }
     .mini { border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 6px; font-size: 12px; padding: 2px 8px; white-space: nowrap; cursor: pointer; }
     .mini:hover { border-color: var(--accent); color: var(--accent); }
-    ol.log { margin: 0; padding: 8px 12px 8px 40px; font: 12px/1.55 var(--mono); max-height: 240px; overflow: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
-    ol.log:empty::before { content: 'Nothing yet.'; color: var(--muted); margin-left: -28px; }
-    ol.log li { overflow-wrap: anywhere; }
     footer { color: var(--muted); font-size: 13px; margin-top: 24px; }
 
     /* ---- the emulated Win32 desktop */
     .desktop { display: grid; gap: 16px; margin-bottom: 16px; }
-    .desktop.multi { grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); align-items: start; }
     figure.w32-slot { margin: 0; min-width: 0; }
     figure.w32-slot figcaption { display: flex; align-items: baseline; gap: 8px; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
     .slot { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
@@ -162,10 +147,8 @@
       h1 { font-size: 21px; }
       .panel { padding: 14px; border-radius: 10px; }
       .panel.inner { padding: 12px; }
-      nav.labs button { padding: 7px 10px; font-size: 13px; }
       .mini { padding: 5px 10px; }
       .lab-head a { margin-left: 0; flex-basis: 100%; }
-      .long { display: none; }
       .w32-dialog.modal { top: 34px; }
     }
   </style>
@@ -176,15 +159,24 @@
     <img src="icon.svg" alt="" width="52" height="52">
     <div>
       <h1>Shape Editor</h1>
-      <p>The shape-painting app from the <a href="https://github.com/Andrew1407/OOP">OOP</a> labs, running in your browser. It is a Win32 program compiled from its own C++ sources to WebAssembly: draw shapes with the toolbar and menus, keep them in the shape list, and save and load them. Labs 2–4 are its earlier versions. Hover a menu item or button to see its original Ukrainian or Russian text.</p>
+      <p>The shape-painting app from the <a href="https://github.com/Andrew1407/OOP">OOP</a> labs, running in your browser. It is a Win32 program compiled from its own C++ sources to WebAssembly. Hover a menu item or button to see its original Ukrainian or Russian text.</p>
     </div>
     <button class="theme-toggle" data-theme-toggle></button>
   </header>
 
-  <nav class="labs" id="nav" role="tablist" aria-label="Labs"></nav>
-  <main id="labs"></main>
+  <main>
+    <section class="panel">
+      <div class="lab-head"><span class="lang cpp">C++ → Wasm</span><h3>Shape editor <span class="muted">· lab 5</span></h3><a href="https://github.com/Andrew1407/OOP/tree/main/5-lab" target="_blank" rel="noopener">View source</a></div>
+      <p class="intro">Pick a tool on the toolbar or in <b>Objects</b> and drag on the canvas: point, line, rectangle, ellipse, a line with circles at its ends, or a cube. Every shape you draw is appended to <code>shapes.txt</code> and to the modeless <b>Shape list</b> window (<b>Help → Shape list</b>), where you can select a shape to highlight it in red, or delete it. <b>File → Read file</b> loads the shapes in <code>shapesRead.txt</code> onto the canvas and into the list.</p>
+      <div class="controls"><button class="run" type="button" data-demo>Run demo</button><button class="ghost" type="button" data-restart>Restart</button>
+        <span class="hint" id="status">Starting…</span></div>
+      <div class="desktop"><figure class="w32-slot" id="editor" data-copyable data-title="Shape editor"></figure></div>
+      <div id="files"></div>
+      <p class="note native" style="margin:0"><b>How it runs.</b> The lab's own sources (<code>Lab5.cpp</code>, <code>my_editor.cpp</code>, <code>my_table.cpp</code>, <code>editor.cpp</code>, <code>shape.cpp</code>, <code>toolbar.cpp</code>) are compiled to WebAssembly with emscripten, including <code>wWinMain</code> and its message loop, which waits on the page through Asyncify. The Win32 calls go to a small shim (<a href="https://github.com/Andrew1407/OOP/blob/main/web/win32/windows.h"><code>web/win32</code></a>): windows, messages and dialogs run in C++, and GDI drawing goes to the canvas with the same pens, brushes and <code>R2_NOTXORPEN</code> raster mode. Menus, the toolbar, dialogs and strings come from the lab's <code>.rc</code> files and bitmaps. <code>shapes.txt</code> and <code>shapesRead.txt</code> live in the module's memory file system in the lab's Windows-1251 format.</p>
+    </section>
+  </main>
 
-  <footer>The client areas are white, as in the Windows originals. Drawing works with a mouse, a pen or a finger.</footer>
+  <footer>The client area is white, as in the Windows original. Drawing works with a mouse, a pen or a finger.</footer>
 </div>
 <script type="module" src="./app.js"></script>
 </body>

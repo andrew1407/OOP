@@ -29,17 +29,17 @@ jobs:
 
       - uses: mymindstorm/setup-emsdk@v14
 
-      # Compile the shape editor labs' C++ (the sources listed in its .vcxproj) with the Win32 shim in web/win32
+      # Compile the lab 5 shape editor's C++ (the sources listed in its .vcxproj) with the Win32 shim in web/win32
       - name: Build WebAssembly modules
         run: python3 web/build.py
 
-      # Mirror the repo layout so the page can load ../N-lab/*.rc, resource.h, icons, bitmaps and shapesRead.txt
+      # Mirror the repo layout so the page can load ../5-lab/*.rc, resource.h, icons, bitmaps and shapesRead.txt
       - name: Assemble site
         run: |
           mkdir -p _site/web
           cp web/*.html web/*.js web/*.svg _site/web/
           cp -r web/wasm _site/web/
-          cp -r 2-lab 3-lab 4-lab 5-lab _site/
+          cp -r 5-lab _site/
           echo '<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=./web/"><title>Shape Editor · OOP Labs</title><link rel="icon" href="./web/icon.svg"><a href="./web/">Open the showcase</a>' > _site/index.html
           touch _site/.nojekyll
 

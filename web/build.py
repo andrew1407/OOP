@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Compile the shape editor labs' (2-5) C++ to WebAssembly with emscripten (em++ must be on PATH).
+"""Compile the lab 5 shape editor's C++ to WebAssembly with emscripten (em++ must be on PATH).
 
-Each lab's sources are the <ClCompile> files of its own .vcxproj, built against the Win32
-shim in web/win32 instead of the Windows SDK. The labs are copied to web/.build first so that
-MSVC's handling of the source text can be reproduced without touching the lab directories:
+The sources are the <ClCompile> files of 5-lab/Lab5.vcxproj, built against the Win32
+shim in web/win32 instead of the Windows SDK. The lab is copied to web/.build first so that
+MSVC's handling of the source text can be reproduced without touching the lab directory:
   - UTF-8 files are converted to Windows-1251. MSVC turns narrow string literals into the
     ANSI code page, so at run time every char string the labs use is cp1251 (as in
     5-lab/shapes.txt); the files that are already cp1251 are copied as they are.
   - Windows file names are case-insensitive, so "Resource.h" also finds "resource.h".
-Output: web/wasm/<name>.mjs + .wasm, one module per lab.
+Output: web/wasm/lab5.mjs + .wasm.
 """
 import re
 import shutil
@@ -21,18 +21,13 @@ WEB = ROOT / 'web'
 TMP = WEB / '.build'
 OUT = WEB / 'wasm'
 
-# name, project file, character set (labs 2-4 were built as Unicode, lab 5 as multi-byte)
-PROJECTS = [
-    ('lab2', '2-lab/Lab2.vcxproj', 'unicode'),
-    ('lab3', '3-lab/Lab3.vcxproj', 'unicode'),
-    ('lab4', '4-lab/Lab4.vcxproj', 'unicode'),
-    ('lab5', '5-lab/Lab5.vcxproj', 'mbcs'),
-]
+# name, project file, character set (lab 5 was built as multi-byte)
+PROJECTS = [('lab5', '5-lab/Lab5.vcxproj', 'mbcs')]
 
 COMPILE = ['-O2', '-std=c++17', '-fshort-wchar', '-fno-strict-return', '-w', f'-I{WEB / "win32"}']
 LINK = [
     '-sMODULARIZE=1', '-sEXPORT_ES6=1', '-sEXPORT_NAME=create', '-sENVIRONMENT=web',
-    # Windows never maps user memory below 64 KiB, and the labs' MAKEINTRESOURCE ids rely on it
+    # Windows never maps user memory below 64 KiB, and the lab's MAKEINTRESOURCE ids rely on it
     '-sGLOBAL_BASE=65536',
     '-sASYNCIFY=1', '-sASYNCIFY_STACK_SIZE=65536', '-sINITIAL_MEMORY=33554432', '-sSTACK_SIZE=1048576',
     '-sEXPORTED_FUNCTIONS=_w32_main,_w32_send,_w32_tooltip,_malloc,_free',
@@ -75,9 +70,8 @@ def main() -> None:
         src_dir = stage(vcx.parent)
         files = [str(src_dir / s.replace('\\', '/')) for s in sources(vcx)]
         flags = COMPILE + (['-DUNICODE', '-D_UNICODE'] if charset == 'unicode' else [])
-        runtime = 'ccall,HEAPU8,HEAP32,HEAPU16,HEAPU32' + (',FS' if name == 'lab5' else '')
-        extra = ['-sFORCE_FILESYSTEM=1'] if name == 'lab5' else []
-        cmd = ['em++', *flags, *files, str(shim), *LINK, *extra,
+        runtime = 'ccall,HEAPU8,HEAP32,HEAPU16,HEAPU32,FS'
+        cmd = ['em++', *flags, *files, str(shim), *LINK, '-sFORCE_FILESYSTEM=1',
                f'-sEXPORTED_RUNTIME_METHODS={runtime}', '-o', str(OUT / f'{name}.mjs')]
         print(f'{name}: {", ".join(Path(f).name for f in files)}', flush=True)
         subprocess.run(cmd, check=True, cwd=src_dir)
