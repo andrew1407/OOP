@@ -159,7 +159,7 @@
     <img src="icon.svg" alt="" width="52" height="52">
     <div>
       <h1>Shape Editor</h1>
-      <p>The shape-painting app from the <a href="https://github.com/Andrew1407/OOP">OOP</a> labs, running in your browser. It is a Win32 program compiled from its own C++ sources to WebAssembly. Hover a menu item or button to see its original Ukrainian or Russian text.</p>
+      <p>The shape-painting app from the <a href="https://github.com/Andrew1407/OOP">OOP</a> labs, running in your browser. It is a Win32 program compiled from its own C++ sources to WebAssembly.</p>
     </div>
     <button class="theme-toggle" data-theme-toggle></button>
   </header>
@@ -172,7 +172,7 @@
         <span class="hint" id="status">Starting…</span></div>
       <div class="desktop"><figure class="w32-slot" id="editor" data-copyable data-title="Shape editor"></figure></div>
       <div id="files"></div>
-      <p class="note native" style="margin:0"><b>How it runs.</b> The lab's own sources (<code>Lab5.cpp</code>, <code>my_editor.cpp</code>, <code>my_table.cpp</code>, <code>editor.cpp</code>, <code>shape.cpp</code>, <code>toolbar.cpp</code>) are compiled to WebAssembly with emscripten, including <code>wWinMain</code> and its message loop, which waits on the page through Asyncify. The Win32 calls go to a small shim (<a href="https://github.com/Andrew1407/OOP/blob/main/web/win32/windows.h"><code>web/win32</code></a>): windows, messages and dialogs run in C++, and GDI drawing goes to the canvas with the same pens, brushes and <code>R2_NOTXORPEN</code> raster mode. Menus, the toolbar, dialogs and strings come from the lab's <code>.rc</code> files and bitmaps. <code>shapes.txt</code> and <code>shapesRead.txt</code> live in the module's memory file system in the lab's Windows-1251 format.</p>
+      <p class="note native" style="margin:0"><b>How it runs.</b> The lab's own sources (<code>Lab5.cpp</code>, <code>my_editor.cpp</code>, <code>my_table.cpp</code>, <code>editor.cpp</code>, <code>shape.cpp</code>, <code>toolbar.cpp</code>) are compiled to WebAssembly with emscripten, including <code>wWinMain</code> and its message loop, which waits on the page through Asyncify. The Win32 calls go to a small shim (<a href="https://github.com/Andrew1407/OOP/blob/main/web/win32/windows.h"><code>web/win32</code></a>): windows, messages and dialogs run in C++, and GDI drawing goes to the canvas with the same pens, brushes and <code>R2_NOTXORPEN</code> raster mode. Menus, the toolbar, dialogs and strings come from the lab's <code>.rc</code> files and bitmaps. <code>shapes.txt</code> and <code>shapesRead.txt</code> live in the module's memory file system in the lab's text format.</p>
     </section>
   </main>
 

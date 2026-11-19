@@ -291,7 +291,7 @@ export const clipboard = {
 /**
  * cfg: { exe, module (URL of the .mjs), rc: [urls], defs: [urls], icon, bitmaps: { id: url },
  *        client: [w, h] for CW_USEDEFAULT windows, max: [w, h], unicode, slot (element),
- *        tr (original text -> { en, orig }), log (line, proc), files: { path: Uint8Array },
+ *        log (line, proc), files: { path: Uint8Array },
  *        idle (text for the "not running" card), onState (proc) }
  */
 export class Process {
@@ -407,12 +407,8 @@ export class Process {
     this.mod.HEAPU8.set(b, buf); this.mod.HEAPU8[buf + b.length] = 0;
     return b.length;
   }
-  tr(s) { return this.cfg.tr ? this.cfg.tr(s) : { en: s, orig: '' }; }
-  label(s) {
-    const { en, orig } = this.tr(s);
-    const html = esc(en).replace(/&amp;(&amp;|.)/g, (m, c) => (c === '&amp;' ? '&amp;' : `<u>${c}</u>`));
-    return { html, title: orig ? `Original: ${orig.replace(/&(.)/g, '$1')}` : '' };
-  }
+  // Resource text to HTML: "&x" underlines the mnemonic, "&&" is a literal ampersand
+  label(s) { return esc(s).replace(/&amp;(&amp;|.)/g, (m, c) => (c === '&amp;' ? '&amp;' : `<u>${c}</u>`)); }
 
   // ---- log
   log(line, opts = {}) { this.cfg.log?.(line, this, opts); }
@@ -545,9 +541,7 @@ export class Process {
     const e = registry.hwnds.get(h);
     if (!e?.titleEl) return;
     e.titleText = text;
-    const { html, title } = this.label(text);
-    e.titleEl.innerHTML = html;
-    e.titleEl.title = title;
+    e.titleEl.innerHTML = this.label(text);
   }
   show(h) {
     const e = registry.hwnds.get(h);
@@ -591,8 +585,7 @@ export class Process {
       if (it.separator) return;
       const b = el('button', 'w32-mi');
       b.type = 'button';
-      const { html, title } = this.label(it.text);
-      b.innerHTML = html; b.title = title;
+      b.innerHTML = this.label(it.text);
       bar.appendChild(b);
       if (!it.popup) { b.onclick = () => { close(); this.post(h, WM.COMMAND, it.id, 0); }; return; }
       b.setAttribute('aria-haspopup', 'menu'); b.setAttribute('aria-expanded', 'false');
@@ -608,8 +601,7 @@ export class Process {
           if (sub.separator) { drop.appendChild(el('hr')); continue; }
           const s = el('button', 'w32-mi');
           s.type = 'button'; s.setAttribute('role', 'menuitemcheckbox'); s.setAttribute('aria-checked', !!sub.checked);
-          const l = this.label(sub.text);
-          s.innerHTML = `<span class="ck">${sub.checked ? '✓' : ''}</span>${l.html}`; s.title = l.title;
+          s.innerHTML = `<span class="ck">${sub.checked ? '✓' : ''}</span>${this.label(sub.text)}`;
           s.onclick = () => { close(); this.post(h, WM.COMMAND, sub.id, 0); };
           drop.appendChild(s);
         }
@@ -694,10 +686,10 @@ export class Process {
       ce.h = ch;
       e.controls.push(ce);
       let node;
-      const lab = c.text ? this.label(c.text) : { html: '', title: '' };
+      const lab = c.text ? this.label(c.text) : '';
       if (/PUSHBUTTON$/.test(c.type)) {
-        node = el('button', `w32-btn${c.type === 'DEFPUSHBUTTON' ? ' def' : ''}`, lab.html);
-        node.type = 'button'; node.title = lab.title;
+        node = el('button', `w32-btn${c.type === 'DEFPUSHBUTTON' ? ' def' : ''}`, lab);
+        node.type = 'button';
         node.onclick = () => this.enqueue([h, WM.COMMAND, c.id & 0xffff, ch]);
       } else if (c.type === 'EDITTEXT') {
         node = el('input', 'w32-edit');
@@ -712,7 +704,7 @@ export class Process {
       } else if (c.type === 'ICON') {
         node = el('img', 'w32-icon'); node.src = this.cfg.icon; node.alt = '';
       } else {
-        node = el('span', 'w32-label', lab.html); node.title = lab.title;
+        node = el('span', 'w32-label', lab);
       }
       Object.assign(node.style, { left: `${X(c.x)}px`, top: `${Y(c.y)}px`, width: `${X(c.w)}px`, height: `${Y(c.h)}px`, zIndex: String(100 - z) });
       node.classList.add('w32-ctl');

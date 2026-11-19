@@ -1,6 +1,6 @@
 ﻿//{{NO_DEPENDENCIES}}
-// Включаемый файл, созданный в Microsoft Visual C++.
-// Используется Lab5.rc
+// Microsoft Visual C++ generated include file.
+// Used by Lab5.rc
 //
 #define IDC_MYICON                      2
 #define IDD_LAB5_DIALOG                 102

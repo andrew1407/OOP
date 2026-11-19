@@ -3,7 +3,7 @@
 #include "shape.h"
 #include "my_editor.h"
 
-static const char* ShapesTypes[6]  = { "Точка", "Лінія", "Прямокутник", "Еліпс", "Лінія з кружечками", "Куб" };
+static const char* ShapesTypes[6]  = { "Point", "Line", "Rectangle", "Ellipse", "Line with circles", "Cube" };
 
 MyEditor& MyEditor::GetInstance()
 {

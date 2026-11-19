@@ -36,7 +36,7 @@ static INT_PTR CALLBACK DlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPara
 	{
 	case WM_INITDIALOG:
 	{
-		SetWindowText(hWnd, "Список фігур");
+		SetWindowText(hWnd, "Shape list");
 		for (int i = 0; i < Index; i++)
 			SendDlgItemMessage(hWnd, IDC_LIST1, LB_ADDSTRING, 0, LPARAM(ShapeList[i].c_str()));
 		return 1;
@@ -198,7 +198,7 @@ void MyTable::ReadFile(HWND hWnd, void fn_show(HDC, const std::string, const int
 		idx_str++;
 		for (int u = 0; u < 4; u++)
 		{
-			if (shapeType == "Точка" && u > 1)
+			if (shapeType == "Point" && u > 1)
 			{
 				coords[2] = coords[0];
 				coords[3] = coords[1];

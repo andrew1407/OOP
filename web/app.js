@@ -10,23 +10,7 @@ const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&l
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const WM_COMMAND = 0x111, WM_LBUTTONDOWN = 0x201, WM_LBUTTONUP = 0x202, WM_MOUSEMOVE = 0x200;
 
-// --------------------------------------------------------------- English --
-const EN = {
-  "&Об'єкти": '&Objects', "Об'єкти": 'Objects', 'Точка': 'Point', 'Лінія': 'Line', 'Прямокутник': 'Rectangle', 'Еліпс': 'Ellipse',
-  'Пряма з кружечками': 'Line with circles', 'Лінія з кружечками': 'Line with circles', 'Куб': 'Cube',
-  '&Файл': '&File', 'Вы&ход': 'E&xit', 'Вихід': 'Exit', '&Справка': '&Help', '&О программе...': '&About...',
-  'Очистити': 'Clear', 'Зчитати файл': 'Read file', 'Список фігур': 'Shape list', 'Видалити': 'Delete',
-  'Виділити/зняти виділення': 'Select / deselect', 'Закрити': 'Close', 'ОК': 'OK',
-};
-function tr(s) {
-  if (EN[s]) return { en: EN[s], orig: s };
-  let m;
-  if ((m = s.match(/^О программе (.+)$/))) return { en: `About ${m[1]}`, orig: s };
-  if ((m = s.match(/^(.+), Версия (.+)$/))) return { en: `${m[1]}, Version ${m[2]}`, orig: s };
-  return { en: s, orig: '' };
-}
 const TOOLS = { IDM_POINT: 'Point', IDM_LINE: 'Line', IDM_RECT: 'Rectangle', IDM_ELLIPSE: 'Ellipse', IDM_OOLINE: 'Line with circles', IDM_CUBE: 'Cube' };
-const SHAPE_EN = { 'Точка': 'Point', 'Лінія': 'Line', 'Прямокутник': 'Rectangle', 'Еліпс': 'Ellipse', 'Лінія з кружечками': 'Line with circles', 'Куб': 'Cube' };
 
 // -------------------------------------------------------------------- app --
 const APP = {
@@ -42,7 +26,7 @@ const app = { proc: null, slot: null, refresh: null };
 const frameOf = (p) => [...p.frames.entries()].find(([, e]) => e.kind === 'frame');
 async function waitFor(fn, ms = 4000) { const t = Date.now(); for (;;) { const v = fn(); if (v) return v; if (Date.now() - t > ms) throw new Error('The demo timed out'); await sleep(40); } }
 const visibleDialog = (slot) => [...slot.querySelectorAll('.w32-dialog')].find((d) => !d.hidden);
-const btnByOrig = (root, orig) => [...root.querySelectorAll('button')].find((b) => b.title === `Original: ${orig}` || b.textContent.trim() === orig);
+const btnByText = (root, text) => [...root.querySelectorAll('button')].find((b) => b.textContent.trim() === text);
 
 async function drag(p, h, [x0, y0], [x1, y1], steps = 14) {
   p.input(h, WM_LBUTTONDOWN, x0, y0);
@@ -64,7 +48,7 @@ async function runDemo() {
   await sleep(200);
   list.querySelector('[data-i="2"]')?.click();
   await sleep(250);
-  btnByOrig(list.closest('.w32-dialog'), 'Виділити/зняти виділення').click();
+  btnByText(list.closest('.w32-dialog'), 'Select/deselect').click();
 }
 // ---------------------------------------------------------- lab 5 extras --
 let lab5Sample = null;
@@ -78,7 +62,7 @@ function filesPanel(box) {
       <div class="panel inner" data-copyable data-title="shapesRead.txt">
         <div class="copy-head"><h2>shapesRead.txt <small>read by File → Read file</small></h2><span class="copy-actions"><label class="mini file">Upload<input type="file" accept=".txt,text/plain" hidden></label><button type="button" class="mini" data-reset>Lab sample</button>${actionBtn('text')}</span></div>
         <pre class="text read"></pre>
-        <p class="hint">Text in the lab's format, Windows-1251: <code>Куб:  x1: 189; y1: 171; x2: 279; y2: 250;</code>. A UTF-8 file is converted.</p>
+        <p class="hint">Text in the lab's format: <code>Cube:  x1: 189; y1: 171; x2: 279; y2: 250;</code></p>
       </div></div>`;
   const p = app.proc;
   const showRead = (bytes) => { $('.read', box).textContent = decodeCp1251(bytes) || '(empty)'; };
@@ -112,7 +96,7 @@ function filesPanel(box) {
       const v = Object.fromEntries([...rest.matchAll(/(x1|y1|x2|y2):\s*(-?\d+);/g)].map((m) => [m[1], m[2]]));
       return [type, v];
     });
-    $('.rows', box).innerHTML = rows.map(([t, v], i) => `<tr><td class="num">${i}</td><td title="${esc(t)}">${esc(SHAPE_EN[t] || t)} <span class="muted">${esc(t)}</span></td>${['x1', 'y1', 'x2', 'y2'].map((k) => `<td class="num">${v[k] ?? ''}</td>`).join('')}</tr>`).join('');
+    $('.rows', box).innerHTML = rows.map(([t, v], i) => `<tr><td class="num">${i}</td><td>${esc(t)}</td>${['x1', 'y1', 'x2', 'y2'].map((k) => `<td class="num">${v[k] ?? ''}</td>`).join('')}</tr>`).join('');
     $('.empty', box).hidden = rows.length > 0;
   };
 }
@@ -174,7 +158,7 @@ async function start() {
     const r = await fetch('../5-lab/shapesRead.txt');
     lab5Sample = new Uint8Array(await r.arrayBuffer());
     app.proc = new Process({
-      ...APP, files: { '/shapesRead.txt': lab5Sample }, slot: app.slot, tr, toolNames: TOOLS,
+      ...APP, files: { '/shapesRead.txt': lab5Sample }, slot: app.slot, toolNames: TOOLS,
       log: queueRefresh, onText: () => {}, onState: updateStatus,
     });
     await app.proc.prepare();

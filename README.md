@@ -14,7 +14,7 @@ A set of object-oriented programming labs written in C++ for the Windows platfor
 
 The projects are organized as numbered labs. Most labs implement an interactive shape editor: the user draws shapes on the window with the mouse, and each shape type is a class derived from a common abstract base. Later labs extend this with menus, toolbars, multiple inheritance, file persistence, a table view, the singleton pattern, and inter-process communication.
 
-All applications use the raw Win32 API (GDI drawing, dialog boxes, message loops) — not MFC. The UI text and source comments are in Ukrainian/Russian.
+All applications use the raw Win32 API (GDI drawing, dialog boxes, message loops) — not MFC. The UI text and source comments are in Ukrainian/Russian, except lab 5, which is in English.
 
 ## Topics and labs
 
@@ -32,7 +32,7 @@ All applications use the raw Win32 API (GDI drawing, dialog boxes, message loops
 **[Open the shape editor in the browser](https://andrew1407.github.io/OOP/)**. The page runs the finished shape-painting app from lab 5: draw points, lines, rectangles, ellipses, lines with circles and cubes with the toolbar and menus, select or delete them in the shape list window, and save and load them through `shapes.txt` and `shapesRead.txt`. The canvas copies as a PNG image, and the `shapes.txt` table and `shapesRead.txt` copy as text.
 
 - **It runs natively, nothing is ported.** [`web/build.py`](web/build.py) compiles the `<ClCompile>` sources of [`5-lab/Lab5.vcxproj`](5-lab/Lab5.vcxproj) with emscripten, including `wWinMain` and its message loop, as a multi-byte build with narrow strings in Windows-1251, like the original project.
-- **Win32 is emulated by a small shim** in [`web/win32`](web/win32) and [`web/host.js`](web/host.js). Windows, message queues and dialogs run in C++. `GetMessage` waits on the page through Asyncify. GDI drawing goes to a canvas with GDI's pens, brushes and `R2_NOTXORPEN` raster mode. Menus, the toolbar, dialogs and string tables are read from the lab's own `.rc` files and bitmaps, and the UI labels are translated to English, with the originals in tooltips.
+- **Win32 is emulated by a small shim** in [`web/win32`](web/win32) and [`web/host.js`](web/host.js). Windows, message queues and dialogs run in C++. `GetMessage` waits on the page through Asyncify. GDI drawing goes to a canvas with GDI's pens, brushes and `R2_NOTXORPEN` raster mode. Menus, the toolbar, dialogs and string tables are read from the lab's own `.rc` files and bitmaps.
 - **Files**: `shapes.txt` and `shapesRead.txt` live in the module's file system. You can download what the editor wrote or upload a file for it to read.
 
 Build and run it locally (needs [emsdk](https://emscripten.org/docs/getting_started/downloads.html)):

@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Включаемый файл, созданный в Microsoft Visual C++.
-// Используется my_table.rc
+// Microsoft Visual C++ generated include file.
+// Used by my_table.rc
 //
 #define IDD_SHAPES_TABLE                101
 #define ID_RM_SHAPE                     1001

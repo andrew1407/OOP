@@ -49,24 +49,24 @@ void TBIconsNotify(LPARAM lParam)
 		switch (lpttt->hdr.idFrom)
 		{
 		case IDM_POINT:
-			pText = (LPSTR)"Точка";
+			pText = (LPSTR)"Point";
 			break;
 		case IDM_LINE:
-			pText = (LPSTR)"Лінія";
+			pText = (LPSTR)"Line";
 			break;
 		case IDM_RECT:
-			pText = (LPSTR)"Прямокутник";
+			pText = (LPSTR)"Rectangle";
 			break;
 		case IDM_ELLIPSE:
-			pText = (LPSTR)"Еліпс";
+			pText = (LPSTR)"Ellipse";
 			break;
 		case IDM_OOLINE:
-			pText = (LPSTR)"Лінія з кружечками";
+			pText = (LPSTR)"Line with circles";
 			break;
 		case IDM_CUBE:
-			pText = (LPSTR)"Куб";
+			pText = (LPSTR)"Cube";
 			break;
-		default: pText = (LPSTR)"Щось невідоме";
+		default: pText = (LPSTR)"Something unknown";
 		}
 		lstrcpy(lpttt->szText, pText);
 	}
